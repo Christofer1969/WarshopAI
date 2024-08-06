@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Front View Detection</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+    <script src="script2.js" defer></script>
+</head>
+<body>
+    <h1>Upload Back View</h1>
+    <p><strong>Email:</strong> <span id="email"></span></p>
+    <p><strong>Produk:</strong> 
+        <select id="productDropdown">
+            <option value="" disabled selected>Pilih Produk</option>
+        </select>
+    </p>
+    <p><strong>Visible:</strong> <span id="visible"></span></p>
+    <img id="selectedImage" width="300"/>
+    <br><br>
+    <button onclick="classifyImage()">Deteksi Sekarang</button>
+    <p id="status"></p>
+    <p id="result"></p>
+    <p id="result2"></p>
+    <button id="saveButton" onclick="saveResult()" style="display: none;">Save Result</button>
+    <button id="nextButton" onclick="goToBackView()" style="display: none;">Next</button>
+    <button id="nextButton" onclick="goToHomeView()" style="display: none;">Back to Glides</button>
+    <script>
+        // Ambil data pengguna dari localStorage
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            document.getElementById('email').textContent = user.email;
+
+            // Isi dropdown dengan produk
+            const productDropdown = document.getElementById('productDropdown');
+            user.products.forEach(productData => {
+                const option = document.createElement('option');
+                option.value = productData.product;
+                option.textContent = productData.product;
+                productDropdown.appendChild(option);
+            });
+
+            // Set imageUpload dengan imageLink dari produk pertama
+            const selectedImage = document.getElementById('selectedImage');
+            selectedImage.src = user.products[0].imageback;
+
+            // Update selectedImage saat produk dipilih dari dropdown
+            productDropdown.addEventListener('change', function() {
+                const selectedProduct = user.products.find(productData => productData.product === this.value);
+                selectedImage.src = selectedProduct.imageback;
+            });
+        } else {
+            // Jika tidak ada data pengguna, arahkan kembali ke halaman login
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
